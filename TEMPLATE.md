@@ -1,10 +1,10 @@
-# Qdrant v1.20 Vector Database with Backups: Railway template spec
+# Qdrant v1 Vector Database with Backups: Railway template spec
 
 ## Listing
 
 | Field | Value |
 |---|---|
-| Name | **Qdrant v1.20 Vector Database with Backups** (41 chars; Qdrant's own `v1.x` naming, minor = the pinned release line) |
+| Name | **Qdrant v1 Vector Database with Backups** (41 chars; Qdrant's own `v1.x` naming, minor = the pinned release line) |
 | Description | Vector search engine with API keys, web dashboard and nightly backups. (70 chars) |
 | Category | AI/ML |
 | Icon | `https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/qdrant.svg` (200, image/svg+xml) |

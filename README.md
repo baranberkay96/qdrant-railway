@@ -1,6 +1,6 @@
 # Deploy and Host Qdrant with Railway
 
-Qdrant is an open-source (Apache-2.0) vector database and similarity search engine written in Rust. This community template runs Qdrant v1.20 with a generated full-access API key and a read-only key, the built-in web dashboard behind that key, collections on a volume, and nightly collection snapshots to a Railway Bucket with retention and one-step restore.
+Qdrant is an open-source (Apache-2.0) vector database and similarity search engine written in Rust. This community template runs Qdrant v1 with a generated full-access API key and a read-only key, the built-in web dashboard behind that key, collections on a volume, and nightly collection snapshots to a Railway Bucket with retention and one-step restore.
 
 ## About Hosting Qdrant
 
@@ -16,7 +16,7 @@ Qdrant stores vectors with JSON payloads and answers nearest-neighbour queries w
 
 ## Dependencies for Qdrant Hosting
 
-- Qdrant v1.20.2 (built from the official `qdrant/qdrant` image, pinned by digest)
+- Qdrant v1.2 (built from the official `qdrant/qdrant` image, pinned by digest)
 - A Railway volume at `/qdrant/data` (included)
 - A Railway Bucket for backups (included, created by the template)
 

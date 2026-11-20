@@ -1,5 +1,5 @@
 {
-  "name": "Qdrant v1.20 Vector Database with Backups",
+  "name": "Qdrant v1 Vector Database with Backups",
   "idSeed": "Qdrant v1.20 Vector Database with Backups",
   "description": "Vector search engine with API keys, web dashboard and nightly backups.",
   "category": "AI/ML",
