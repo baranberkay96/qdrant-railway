@@ -1,0 +1,202 @@
+{
+  "name": "Qdrant v1.20 Vector Database with Backups",
+  "idSeed": "Qdrant v1.20 Vector Database with Backups",
+  "description": "Vector search engine with API keys, web dashboard and nightly backups.",
+  "category": "AI/ML",
+  "tags": [
+    "qdrant",
+    "vector-database",
+    "vector-search",
+    "rag",
+    "embeddings",
+    "semantic-search",
+    "ai",
+    "backups"
+  ],
+  "image": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/qdrant.svg",
+  "upstream": {
+    "repo": "qdrant/qdrant",
+    "version": "v1.20.2",
+    "image": "qdrant/qdrant:v1.20.2@sha256:d277592721d2e3b73f9b797b53cf05e6a5bb2134f6d13fdbda4ca51782afbcac",
+    "checked": "2026-11-20"
+  },
+  "services": {
+    "Qdrant": {
+      "icon": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/qdrant.svg",
+      "source": {
+        "repo": "baranberkay96/qdrant-railway",
+        "rootDirectory": "/services/qdrant"
+      },
+      "startCommand": null,
+      "preDeployCommand": null,
+      "healthcheckPath": "/readyz",
+      "healthcheckTimeout": 600,
+      "restartPolicyType": "ALWAYS",
+      "restartPolicyMaxRetries": null,
+      "numReplicas": 1,
+      "cronSchedule": null,
+      "publicDomain": true,
+      "targetPort": 6333,
+      "tcpProxy": null,
+      "volume": {
+        "mountPath": "/qdrant/data"
+      },
+      "variables": {
+        "PORT": {
+          "defaultValue": "6333",
+          "description": "REST API, web dashboard (/dashboard) and healthcheck port.",
+          "required": false
+        },
+        "QDRANT__SERVICE__HOST": {
+          "defaultValue": "::",
+          "description": "Listen on IPv4 and IPv6 (Railway private network).",
+          "required": false
+        },
+        "QDRANT__SERVICE__API_KEY": {
+          "defaultValue": "${{secret(48, \"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789\")}}",
+          "description": "Full-access API key (header api-key or Bearer). Generated; also unlocks the web dashboard. 16+ characters, or the API stays locked.",
+          "required": false
+        },
+        "QDRANT__SERVICE__READ_ONLY_API_KEY": {
+          "defaultValue": "${{secret(48, \"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789\")}}",
+          "description": "Read-only API key for search clients. Generated; 16+ characters, or read-only access is off.",
+          "required": false
+        },
+        "QDRANT__STORAGE__STORAGE_PATH": {
+          "defaultValue": "/qdrant/data/storage",
+          "description": "Collections, on the volume.",
+          "required": false
+        },
+        "QDRANT__STORAGE__SNAPSHOTS_PATH": {
+          "defaultValue": "/qdrant/data/snapshots",
+          "description": "Snapshots, on the volume (the backup job deletes them after upload).",
+          "required": false
+        },
+        "QDRANT__STORAGE__TEMP_PATH": {
+          "defaultValue": "/qdrant/data/tmp",
+          "description": "Temporary files for snapshots and optimizations, on the volume.",
+          "required": false
+        },
+        "QDRANT__TELEMETRY_DISABLED": {
+          "defaultValue": "true",
+          "description": "Do not send anonymous usage statistics to Qdrant.",
+          "required": false
+        },
+        "QDRANT__LOG_LEVEL": {
+          "defaultValue": "INFO",
+          "description": "Log level (TRACE, DEBUG, INFO, WARN, ERROR).",
+          "required": false
+        },
+        "QDRANT_URL": {
+          "defaultValue": "https://${{RAILWAY_PUBLIC_DOMAIN}}",
+          "description": "Public URL for clients outside Railway (REST, port 443).",
+          "required": false
+        },
+        "QDRANT_PRIVATE_URL": {
+          "defaultValue": "http://${{RAILWAY_PRIVATE_DOMAIN}}:6333",
+          "description": "REST URL for other services in this project (gRPC: port 6334).",
+          "required": false
+        },
+        "RAILWAY_DEPLOYMENT_DRAINING_SECONDS": {
+          "defaultValue": "30",
+          "description": "Time for Qdrant to flush its write-ahead log on redeploy.",
+          "required": false
+        }
+      }
+    },
+    "Qdrant Backup": {
+      "icon": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/rclone.svg",
+      "source": {
+        "repo": "baranberkay96/qdrant-railway",
+        "rootDirectory": "/services/backup"
+      },
+      "startCommand": null,
+      "preDeployCommand": null,
+      "healthcheckPath": null,
+      "healthcheckTimeout": null,
+      "restartPolicyType": "NEVER",
+      "restartPolicyMaxRetries": null,
+      "numReplicas": 1,
+      "cronSchedule": "15 3 * * *",
+      "publicDomain": false,
+      "targetPort": null,
+      "tcpProxy": null,
+      "volume": null,
+      "variables": {
+        "QDRANT_URL": {
+          "defaultValue": "http://${{Qdrant.RAILWAY_PRIVATE_DOMAIN}}:6333",
+          "description": "Qdrant REST API over the private network.",
+          "required": false
+        },
+        "QDRANT_API_KEY": {
+          "defaultValue": "${{Qdrant.QDRANT__SERVICE__API_KEY}}",
+          "description": "Full-access key of the Qdrant service (snapshots need it).",
+          "required": false
+        },
+        "QDRANT_RESTORE_FROM": {
+          "defaultValue": "",
+          "description": "Run to restore before the next backup, e.g. 20261120T031500Z. One-shot; clear it afterwards. Empty = no restore.",
+          "required": false
+        },
+        "BACKUP_PREFIX": {
+          "defaultValue": "qdrant",
+          "description": "Folder in the Bucket for the backup runs.",
+          "required": false
+        },
+        "BACKUP_RETENTION_DAYS": {
+          "defaultValue": "14",
+          "description": "Delete complete runs older than this many days.",
+          "required": false
+        },
+        "BACKUP_KEEP_MIN": {
+          "defaultValue": "3",
+          "description": "Always keep at least this many complete runs.",
+          "required": false
+        },
+        "BACKUP_WAIT_SECONDS": {
+          "defaultValue": "300",
+          "description": "How long to wait for Qdrant to be ready.",
+          "required": false
+        },
+        "BACKUP_TIMEOUT_SECONDS": {
+          "defaultValue": "3600",
+          "description": "Time limit per snapshot transfer or restore call.",
+          "required": false
+        },
+        "BACKUP_S3_BUCKET": {
+          "defaultValue": "${{Bucket.BUCKET}}",
+          "description": "Railway Bucket that holds the snapshots.",
+          "required": false
+        },
+        "BACKUP_S3_ENDPOINT": {
+          "defaultValue": "${{Bucket.ENDPOINT}}",
+          "description": "Railway Bucket S3 endpoint.",
+          "required": false
+        },
+        "BACKUP_S3_REGION": {
+          "defaultValue": "${{Bucket.REGION}}",
+          "description": "Railway Bucket region.",
+          "required": false
+        },
+        "BACKUP_S3_ACCESS_KEY_ID": {
+          "defaultValue": "${{Bucket.ACCESS_KEY_ID}}",
+          "description": "Railway Bucket access key.",
+          "required": false
+        },
+        "BACKUP_S3_SECRET_ACCESS_KEY": {
+          "defaultValue": "${{Bucket.SECRET_ACCESS_KEY}}",
+          "description": "Railway Bucket secret key.",
+          "required": false
+        },
+        "BACKUP_S3_FORCE_PATH_STYLE": {
+          "defaultValue": "false",
+          "description": "Railway Buckets use virtual-hosted URLs; true only if the Bucket's Credentials tab says path-style.",
+          "required": false
+        }
+      }
+    }
+  },
+  "buckets": [
+    "Bucket"
+  ]
+}
