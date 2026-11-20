@@ -48,10 +48,10 @@ Railway Bucket `Bucket` (virtual-hosted style).
 
 | Service | Idle RAM | Typical | CPU |
 |---|---|---|---|
-| Qdrant | ~60–90 MB empty | grows with vectors: ~1.2 GB per 1M × 768-dim float32 vectors with HNSW in RAM (less with quantization/on-disk) | low idle, bursts on indexing |
+| Qdrant | measured ~430 MB on Railway with 2 small collections (Railway's figure includes page cache of the mmapped segments; max 860 MB during a redeploy overlap) | grows with vectors: ~1.2 GB per 1M × 768-dim float32 vectors with HNSW in RAM (less with quantization/on-disk) | low idle, bursts on indexing |
 | Qdrant Backup | 0 (runs ~1 min a day, ~30 MB) | — | — |
 
-Empty project: about $1–2/month (RAM ~0.08 GB ≈ $0.80, volume and Bucket by usage). Typical 1M-vector RAG store: ~1.5 GB RAM ≈ $15/month + storage. Trial (1 GB/service) fits small collections; Hobby or Pro for production.
+Small project: about $4–5/month (RAM ~0.43 GB ≈ $4.30, volume and Bucket by usage). Typical 1M-vector RAG store: ~1.5 GB RAM ≈ $15/month + storage. Trial (1 GB/service) fits small collections; Hobby or Pro for production.
 
 ## Improvements over market templates
 
